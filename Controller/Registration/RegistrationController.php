@@ -8,18 +8,31 @@
 
 namespace DawBed\UserBundle\Controller\Registration;
 
+use DawBed\UserBundle\Event\Response\RegistrationEvent;
 use DawBed\UserBundle\Exception\Form\ErrorException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use DawBed\UserBundle\Form\Registration\RegistrationType;
 use DawBed\UserBundle\Service\User\CreateService;
+use Symfony\Component\HttpFoundation\Response;
 
 class RegistrationController extends AbstractController
 {
-    public function registration(Request $request, CreateService $createService)
+    private $eventDispatcher;
+
+    function __construct(EventDispatcherInterface $eventDispatcher)
     {
-        $form = $this->createForm(RegistrationType::class, $createService->getModel(), [
-            'method' => 'POST'
+        $this->eventDispatcher = $eventDispatcher;
+    }
+
+    public function registration(Request $request, CreateService $createService): Response
+    {
+        $model = $createService->getModel();
+
+        $form = $this->createForm(RegistrationType::class, $model, [
+            'method' => 'POST',
+            'validation_groups' => ['registration']
         ]);
 
         $form->handleRequest($request);
@@ -28,9 +41,10 @@ class RegistrationController extends AbstractController
             throw new ErrorException($form);
         }
 
-        $createService();
+        $createService->entity();
 
-        return $createService->getModel();
-
+        $registrationEvent = new RegistrationEvent($model, $request);
+        $this->eventDispatcher->dispatch((string)$registrationEvent, $registrationEvent);
+        return $registrationEvent->getResponse();
     }
 }

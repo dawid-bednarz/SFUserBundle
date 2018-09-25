@@ -1,1 +1,14 @@
 services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+    DawBed\UserBundle\:
+        resource: '../../../UserBundle/*'
+        exclude: '../../../UserBundle/{DependencyInjection,Entity,Migrations,Tests}'
+    DawBed\UserBundle\Controller\:
+        resource: '../../../UserBundle/Controller'
+        tags: ['controller.service_arguments']
+    DawBed\UserBundle\Service\User\CreateService:
+        arguments:
+         - $user: 'DawBed\UserBundle\Entity\User\User'

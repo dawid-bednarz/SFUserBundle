@@ -10,10 +10,9 @@ namespace DawBed\UserBundle\Domain\User;
 use DawBed\SOLID\Entity\IEntity;
 use DawBed\SOLID\Model\IEntityModifier;
 
-
-class Model implements IEntityModifier
+abstract class BaseModel implements IEntityModifier
 {
-    private $entity;
+    protected $entity;
 
     public function getEntity(): IEntity
     {
