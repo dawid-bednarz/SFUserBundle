@@ -32,9 +32,37 @@ for example your main project directory is src/. Create file **EventListener/Use
         }
     }
 ```
-declare listener in **service.yaml**
+declare exception listener in your **service.yaml**
 ```yaml
     App\EventListener\UserExceptionListener:
             tags:
                 - { name: kernel.event_listener, event: kernel.exception }
+```
+To enable validation edit your **framework.yaml** config
+```yaml
+framework:
+    validation: { enabled: true }
+```
+# CONFIGURATIONS
+You can:
+- overwrite user entity
+
+#### Overwrite user entity
+```php
+namespace App\EventListener\User;
+use App\Entity\User;
+use DawBed\UserBundle\Event\Entity\GetUserEntityEvent;
+
+class GetUserEntityListener
+{
+    function __invoke(GetUserEntityEvent $getUserEntityEvent): void
+    {
+        $getUserEntityEvent->setEntity(new User());
+    }
+}
+```
+# COMMANDS
+Checking if you have all registered listeners
+```
+bin/console dawbed:debug:event_listener  
 ```

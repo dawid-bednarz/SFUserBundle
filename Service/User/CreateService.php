@@ -8,19 +8,25 @@
 
 namespace DawBed\UserBundle\Service\User;
 
-use DawBed\SOLID\Service\IMake;
-use DawBed\UserBundle\Domain\User\Model;
+use DawBed\SOLID\Service\IMakeEntity;
+use DawBed\UserBundle\Domain\User\CreateModel;
+use DawBed\UserBundle\Entity\User\Status\UserStatus;
+use DawBed\UserBundle\Event\Entity\GetUserEntityEvent;
+use DawBed\UserBundle\Service\EventDispatcher;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-class CreateService implements IMake
+class CreateService implements IMakeEntity
 {
     private $entityManager;
     private $model;
 
-    function __construct(EntityManagerInterface $entityManager, Model $model)
+    function __construct($userEntity, EntityManagerInterface $entityManager, EventDispatcherInterface $eventDispatcher)
     {
         $this->entityManager = $entityManager;
-        $this->model = $model;
+        $getUserEntityEvent = new GetUserEntityEvent;
+        $eventDispatcher->dispatch((string)$getUserEntityEvent, $getUserEntityEvent);
+        $this->model = new CreateModel($getUserEntityEvent->getEntity(), new UserStatus(UserStatus::DISABLED));
     }
 
     public function getModel()
@@ -28,8 +34,10 @@ class CreateService implements IMake
         return $this->model;
     }
 
-    public function __invoke(): EntityManagerInterface
+    public function entity(): EntityManagerInterface
     {
+        $this->model->make();
+
         $this->entityManager->persist($this->model->getEntity());
 
         return $this->entityManager;
