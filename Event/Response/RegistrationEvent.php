@@ -23,7 +23,7 @@ class RegistrationEvent extends AbstractResponseEvent
         parent::__construct($request);
     }
 
-    public function getUserModel(): Creator
+    public function getUserModel(): CreatorModel
     {
         return $this->userModel;
     }
