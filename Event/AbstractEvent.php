@@ -9,10 +9,8 @@ namespace DawBed\UserBundle\Event;
 
 use Symfony\Component\EventDispatcher\Event;
 
-abstract class AbstractEvent extends Event
+abstract class AbstractEvent extends Event implements EventNameInterface
 {
-    abstract public static function getName(): string;
-
     public function __toString(): string
     {
         return $this::getName();

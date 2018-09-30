@@ -6,6 +6,7 @@
 declare(strict_types=1);
 
 namespace DawBed\UserBundle\Entity\User;
+use DawBed\ConfirmationBundle\Entity\Token\Token;
 use DawBed\UserBundle\Entity\User\Status\UserStatusInterface;
 use DateTime;
 
@@ -28,4 +29,8 @@ interface UserInterface
     public function getCreatedAt(): ?DateTime;
 
     public function setCreatedAt(DateTime $createdAt): UserInterface;
+
+    public function getActivateToken(): ?Token;
+
+    public function setActivateToken(Token $confirmationToken): UserInterface;
 }

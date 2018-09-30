@@ -1,20 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="DawBed\UserBundle\Entity\User\User" table="user">
-    <id name="id" type="integer" column="id">
-      <generator strategy="IDENTITY"/>
-    </id>
-    <field name="email" unique="true" type="string" column="email" length="180" nullable="false">
-      <options>
-        <option name="fixed"/>
-      </options>
-    </field>
-    <field name="status" type="integer" length="2" column="status" nullable="false"/>
-    <field name="createdAt" type="datetime" column="created_at" nullable="false"/>
-    <field name="password" type="string" column="password" length="255" nullable="false">
-      <options>
-        <option name="fixed"/>
-      </options>
-    </field>
-  </entity>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                  xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="DawBed\UserBundle\Entity\User\User" table="user">
+        <id name="id" type="integer" column="id">
+            <generator strategy="IDENTITY"/>
+        </id>
+        <field name="email" unique="true" type="string" column="email" length="180" nullable="false">
+            <options>
+                <option name="fixed"/>
+            </options>
+        </field>
+        <field name="status" type="integer" length="2" column="status" nullable="false"/>
+        <field name="createdAt" type="datetime" column="created_at" nullable="false"/>
+        <field name="password" type="string" column="password" length="255" nullable="false">
+            <options>
+                <option name="fixed"/>
+            </options>
+        </field>
+        <many-to-one field="activateToken" target-entity="DawBed\ConfirmationBundle\Entity\Token\Token" fetch="LAZY">
+            <join-columns>
+                <join-column name="activate_token_id" nullable="true" referenced-column-name="id"/>
+            </join-columns>
+        </many-to-one>
+    </entity>
 </doctrine-mapping>

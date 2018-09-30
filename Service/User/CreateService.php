@@ -8,38 +8,36 @@
 
 namespace DawBed\UserBundle\Service\User;
 
-use DawBed\SOLID\Service\IMakeEntity;
+use DawBed\ConfirmationBundle\Entity\Token\Type\TokenType;
 use DawBed\UserBundle\Domain\User\CreateModel;
-use DawBed\UserBundle\Entity\User\Status\UserStatus;
-use DawBed\UserBundle\Event\Entity\GetUserEntityEvent;
 use DawBed\UserBundle\Service\EventDispatcher;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use DawBed\ConfirmationBundle\Entity\Token\Token;
+use DawBed\UserBundle\Event\Token\GenerateEvent as GenerateTokenEvent;
 
-class CreateService implements IMakeEntity
+class CreateService
 {
-    private $entityManager;
-    private $model;
+    protected $entityManager;
+    private $eventDispatcher;
 
-    function __construct($userEntity, EntityManagerInterface $entityManager, EventDispatcherInterface $eventDispatcher)
+    function __construct(EntityManagerInterface $entityManager, EventDispatcher $eventDispatcher)
     {
         $this->entityManager = $entityManager;
-        $getUserEntityEvent = new GetUserEntityEvent;
-        $eventDispatcher->dispatch((string)$getUserEntityEvent, $getUserEntityEvent);
-        $this->model = new CreateModel($getUserEntityEvent->getEntity(), new UserStatus(UserStatus::DISABLED));
+        $this->eventDispatcher = $eventDispatcher;
     }
 
-    public function getModel()
+    public function entity(CreateModel $model): EntityManagerInterface
     {
-        return $this->model;
-    }
-
-    public function entity(): EntityManagerInterface
-    {
-        $this->model->make();
-
-        $this->entityManager->persist($this->model->getEntity());
+        $entity = $model->make();
+        $entity->setActivateToken($this->getActivateToken());
+        $this->entityManager->persist($entity);
 
         return $this->entityManager;
+    }
+
+    private function getActivateToken():?Token
+    {
+        return $this->eventDispatcher->dispatch(new GenerateTokenEvent(new \DateInterval('P1D'), new TokenType(TokenType::PUBLIC)))
+            ->getToken();
     }
 }

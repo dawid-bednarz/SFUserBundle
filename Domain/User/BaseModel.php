@@ -7,20 +7,35 @@ declare(strict_types=1);
 
 namespace DawBed\UserBundle\Domain\User;
 
-use DawBed\SOLID\Entity\IEntity;
-use DawBed\SOLID\Model\IEntityModifier;
+use DawBed\UserBundle\Entity\User\User;
 
-abstract class BaseModel implements IEntityModifier
+abstract class BaseModel
 {
     protected $entity;
+    protected $password;
 
-    public function getEntity(): IEntity
+    function __construct(User $entity)
+    {
+        $this->entity = $entity;
+    }
+
+    public function getEntity(): User
     {
         return $this->entity;
     }
 
-    public function setEntity(IEntity $entity): void
+    public function getPassword(): ?string
     {
-        $this->entity = $entity;
+        return $this->password;
+    }
+
+    public function setPassword(string $password)
+    {
+        $this->password = $password;
+    }
+
+    public function hashPassword()
+    {
+        return password_hash($this->password, PASSWORD_ARGON2I);
     }
 }
