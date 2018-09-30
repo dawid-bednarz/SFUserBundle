@@ -11,7 +11,6 @@ use DawBed\UserBundle\Entity\User\User;
 use DawBed\UserBundle\Entity\User\UserInterface;
 use DawBed\UserBundle\Event\AbstractEvent;
 use DawBed\UserBundle\Event\Events;
-use DawBed\UserBundle\Event\EventNameInterface;
 
 class GetUserEntityEvent extends AbstractEvent
 {

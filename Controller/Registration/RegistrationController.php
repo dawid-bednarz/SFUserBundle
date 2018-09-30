@@ -8,10 +8,13 @@
 
 namespace DawBed\UserBundle\Controller\Registration;
 
-use DawBed\UserBundle\Event\Response\RegistrationEvent;
+use DawBed\UserBundle\Domain\User\CreateModel;
+use DawBed\UserBundle\Event\Entity\GetUserEntityEvent;
+use DawBed\UserBundle\Event\Response\RegistrationEvent as RegistrationResponseEvent;
 use DawBed\UserBundle\Exception\Form\ErrorException;
+use DawBed\UserBundle\Service\EventDispatcher;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use DawBed\UserBundle\Event\Request\RegistrationEvent as RegistrationRequestEvent;
 use Symfony\Component\HttpFoundation\Request;
 use DawBed\UserBundle\Form\Registration\RegistrationType;
 use DawBed\UserBundle\Service\User\CreateService;
@@ -21,14 +24,18 @@ class RegistrationController extends AbstractController
 {
     private $eventDispatcher;
 
-    function __construct(EventDispatcherInterface $eventDispatcher)
+    function __construct(EventDispatcher $eventDispatcher)
     {
         $this->eventDispatcher = $eventDispatcher;
     }
 
     public function registration(Request $request, CreateService $createService): Response
     {
-        $model = $createService->getModel();
+        $this->eventDispatcher->dispatch(new RegistrationRequestEvent($request));
+
+        $entity = $this->eventDispatcher->dispatch(new GetUserEntityEvent)->getEntity();
+
+        $model = new CreateModel($entity);
 
         $form = $this->createForm(RegistrationType::class, $model, [
             'method' => 'POST',
@@ -41,10 +48,10 @@ class RegistrationController extends AbstractController
             throw new ErrorException($form);
         }
 
-        $createService->entity();
+        $createService->entity($model);
 
-        $registrationEvent = new RegistrationEvent($model, $request);
-        $this->eventDispatcher->dispatch((string)$registrationEvent, $registrationEvent);
-        return $registrationEvent->getResponse();
+        return $this->eventDispatcher->dispatch(new RegistrationResponseEvent($entity, $request))
+            ->getResponse();
     }
+
 }

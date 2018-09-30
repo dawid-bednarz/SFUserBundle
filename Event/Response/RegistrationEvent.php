@@ -7,25 +7,24 @@ declare(strict_types=1);
 
 namespace DawBed\UserBundle\Event\Response;
 
-use DawBed\UserBundle\Domain\User\CreateModel;
+use DawBed\UserBundle\Entity\User\UserInterface;
 use DawBed\UserBundle\Event\Events;
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
 
 class RegistrationEvent extends AbstractResponseEvent
 {
-    private $userModel;
+    private $user;
 
-    function __construct(CreateModel $userModel, Request $request)
+    function __construct(UserInterface $user, Request $request)
     {
-        $this->userModel = $userModel;
+        $this->user = $user;
 
         parent::__construct($request);
     }
 
-    public function getUserModel(): CreatorModel
+    public function getUser(): UserInterface
     {
-        return $this->userModel;
+        return $this->user;
     }
 
     public static function getName(): string

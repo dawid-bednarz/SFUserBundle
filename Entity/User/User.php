@@ -6,11 +6,12 @@
 
 namespace DawBed\UserBundle\Entity\User;
 
-use DawBed\SOLID\Entity\IEntity;
+use DawBed\ConfirmationBundle\Entity\Token\Token;
+use DawBed\SOLID\Entity\EntityInterface;
 use DawBed\UserBundle\Entity\User\Status\UserStatusInterface;
 use DateTime;
 
-class User implements IEntity, UserInterface
+class User implements EntityInterface, UserInterface
 {
     protected $id;
 
@@ -21,6 +22,8 @@ class User implements IEntity, UserInterface
     protected $password;
 
     protected $createdAt;
+
+    protected $activateToken;
 
     public function getId():?int
     {
@@ -68,10 +71,23 @@ class User implements IEntity, UserInterface
         return $this->createdAt;
     }
 
-    public function setCreatedAt(DateTime $createdAt) : UserInterface
+    public function setCreatedAt(DateTime $createdAt): UserInterface
     {
         $this->createdAt = $createdAt;
 
         return $this;
     }
+
+    public function getActivateToken(): ?Token
+    {
+        return $this->activateToken;
+    }
+
+    public function setActivateToken(Token $activateToken): UserInterface
+    {
+        $this->activateToken = $activateToken;
+
+        return $this;
+    }
+
 }

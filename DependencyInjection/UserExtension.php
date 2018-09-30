@@ -18,17 +18,18 @@ use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
 class UserExtension extends Extension implements PrependExtensionInterface
 {
+
     public function prepend(ContainerBuilder $container): void
     {
+        $loader = new YamlFileLoader($container, new FileLocator(dirname(__DIR__) . '/Resources/config'));
+        $loader->load('doctrine.yaml');
         $this->checkHasRegisteredListeners($container);
     }
 
     public function load(array $configs, ContainerBuilder $container): void
     {
-        $configuration = new Configuration();
         $loader = new YamlFileLoader($container, new FileLocator(dirname(__DIR__) . '/Resources/config'));
         $loader->load('services.yaml');
-        $config = $this->processConfiguration($configuration, $configs);
     }
 
     public function getAlias(): string

@@ -13,10 +13,12 @@ class Events implements \IteratorAggregate
     const OPTIONAL = 2;
 
     const REGISTRATION_RESPONSE = 'user.registration.response';
+    const REGISTRATION_REQUEST = 'user.registration.request';
     const GET_USER_ENTITY = 'user.get.entity';
 
     const ALL = [
         self::REGISTRATION_RESPONSE => self::REQUIRED,
+        self::REGISTRATION_REQUEST => self::OPTIONAL,
         self::GET_USER_ENTITY => self::OPTIONAL
     ];
 

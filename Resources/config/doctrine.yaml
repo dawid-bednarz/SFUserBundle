@@ -1,0 +1,13 @@
+doctrine:
+    orm:
+        auto_generate_proxy_classes: '%kernel.debug%'
+        naming_strategy: doctrine.orm.naming_strategy.underscore
+        auto_mapping: true
+        mappings:
+            UserBundle:
+                is_bundle: false
+                type: xml
+                dir: '%kernel.project_dir%/bundle/UserBundle/Resources/config/schema'
+                prefix: 'DawBed\UserBundle\Entity'
+                alias: UserBundle
+
