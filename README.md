@@ -41,7 +41,6 @@ class ErrorListener
     public function __invoke(FormErrorEvent $event)
     {
         $form = $event->getForm();
-        $exception = $event->getException();
         $response = new Response();
         $response->setContent('...');
         $event->setResponse($response);
