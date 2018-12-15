@@ -1,6 +1,8 @@
 userRegistration:
     path: /registration
     methods: [POST,OPTIONS]
-    controller: DawBed\UserBundle\Controller\Registration\RegistrationController::registration
+    controller: DawBed\UserRegistrationBundle\Controller\RegistrationController::registration
+
+
 
 

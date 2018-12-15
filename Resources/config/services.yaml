@@ -3,9 +3,10 @@ services:
         autowire: true
         autoconfigure: true
         public: false
-    DawBed\UserBundle\:
-        resource: '../../../UserBundle/*'
-        exclude: '../../../UserBundle/{DependencyInjection,Entity,Migrations,Tests}'
-    DawBed\UserBundle\Controller\:
-        resource: '../../../UserBundle/Controller'
+    DawBed\UserRegistrationBundle\:
+        resource: '../../../UserRegistrationBundle/*'
+        exclude: '../../../UserRegistrationBundle/{DependencyInjection,Entity,Migrations,Tests}'
+    DawBed\UserRegistrationBundle\Controller\:
+        resource: '../../../UserRegistrationBundle/Controller'
         tags: ['controller.service_arguments']
+

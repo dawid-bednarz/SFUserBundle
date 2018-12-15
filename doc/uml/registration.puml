@@ -1,0 +1,23 @@
+@startuml
+(*) --> "dispatch request"
+--> "check input"
+If "Validate" then
+--> "dispatch error"
+
+else
+--> [Yes] "process"
+Endif
+--> "dispatch response"
+
+If "Have confirmation bundle" then
+--> [Yes] "process confirmation"
+--> "dispatch confirmation event"
+--> (*)
+else
+--> (*)
+Endif
+
+
+
+
+@enduml
