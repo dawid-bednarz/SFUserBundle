@@ -1,4 +1,4 @@
-DawBed\UserBundle\Entity\User\User:
+DawBed\PHPUser\User:
       constraints:
         - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
             fields: [email]
@@ -7,7 +7,7 @@ DawBed\UserBundle\Entity\User\User:
          email:
            - NotBlank: { groups: [registration] }
            - Email: { groups: [registration] }
-DawBed\UserBundle\Domain\User\CreateModel:
+DawBed\PHPUser\Model\User\CreateModel:
       constrainsts:
          - Symfony\Component\Validator\Constraints\Vadlid:
              fielsds: [entity]
@@ -17,4 +17,3 @@ DawBed\UserBundle\Domain\User\CreateModel:
            - Valid: ~
          password:
            - NotBlank: ~
-

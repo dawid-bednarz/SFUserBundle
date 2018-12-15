@@ -1,0 +1,7 @@
+@startuml
+[UserBundle]
+[ComponentBundle]
+
+[UserBundle] <.. [UserRegistrationBundle] :use
+[ComponentBundle] <.. [UserRegistrationBundle] :use
+@enduml

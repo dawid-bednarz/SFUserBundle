@@ -1,102 +1,50 @@
-# INTRODUCTION
-This bundle is very elastic. There is no dependence with view or other non-logic purpose. **100% pure CRUD.**
-# ECOSYSTEM
-Events, Exceptions 
-# EXCEPTIONS
-you have to handle exceptions on your own.
-
-### Available exceptions:
-- `DawBed\UserBundle\Exception\Form\ErrorException` - catch all !isValid form
-
-for example your main project directory is src/. Create file **EventListener/UserExceptionListener**
-```php
-    namespace App\EventListener;
-    
-    use DawBed\UserBundle\Exception\Form\ErrorException;
-    use Symfony\Component\HttpFoundation\Response;
-    use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
-    
-    class UserExceptionListener
-    {
-        public function __invoke(GetResponseForExceptionEvent $event)
-        {
-            if ($event->getException() instanceof ErrorException) {
-                $response = new Response;
-                /**
-                 * you have access to form $event->getException()->getForm()
-                 * may convert to json,xml or twig view ?
-                 */
-                $response->setContent('....');
-                $event->setResponse($response);
-            }
-        }
-    }
-```
-declare exception listener in your **service.yaml**
+# DESCRIPTION
+Elastic user registration bundle
+# INSTALATION
+1 Add bundle route file to your main routes.yaml (config/routes.yaml)
 ```yaml
-    App\EventListener\UserExceptionListener:
-            tags:
-                - { name: kernel.event_listener, event: kernel.exception }
-```
-To enable validation edit your **framework.yaml** config
+userRegistrationBundle:
+    prefix: user/registration/
+    resource: '@UserRegistrationBundle/Resources/config/routes.yaml'
+``` 
+2 Register Listener (config/services.yaml)
 ```yaml
-framework:
-    validation: { enabled: true }
-```
-# EVENTS
-You can:
-- overwrite user entity
-- extend support request/response registration process
-
-#### Overwrite user entity
-services.yaml
-```yaml
-    App\EventListener\User\GetUserEntityListener:
+    App\EventListener\User\Registration\ResponseListener:
         tags:
-            - { name: kernel.event_listener, event: !php/const DawBed\UserBundle\Event\Events::GET_USER_ENTITY }
+            - { name: kernel.event_listener, event: !php/const DawBed\UserRegistrationBundle\Event\Events::REGISTRATION_RESPONSE }
+    App\EventListener\User\Registration\ErrorListener:
+        tags:
+            - { name: kernel.event_listener, event: !php/const DawBed\UserRegistrationBundle\Event\Events::REGISTRATION_ERROR }
 ```
+Look on the below to see example listener
 ```php
-namespace App\EventListener\User;
-use App\Entity\User;
-use DawBed\UserBundle\Event\Entity\GetUserEntityEvent;
+namespace App\EventListener\Registration\User;
 
-class GetUserEntityListener
+class ResponseListener
 {
-    function __invoke(GetUserEntityEvent $getUserEntityEvent): void
+    function __invoke(ResponseInterfaceEvent $event): void
     {
-        $getUserEntityEvent->setEntity(new User());
+        $response = new Response();
+        $user = $event->getUser();
+        $response->setContent('...');
+
+        $event->setResponse($response);
     }
 }
 ```
-#### Response registration process
-services.yaml
-```yaml
-    App\EventListener\User\RegistrationResponseListener:
-        tags:
-            - { name: kernel.event_listener, event: !php/const DawBed\UserBundle\Event\Events::REGISTRATION_RESPONSE }
-```
+Example Registration Error Listener
 ```php
-namespace App\EventListener\User;
+namespace App\EventListener\Registration\User;
 
-use DawBed\UserBundle\Event\Response\RegistrationEvent;
-use Doctrine\ORM\EntityManagerInterface;
-
-class RegistrationResponseListener
+class ErrorListener
 {
-    private $entityManager;
-
-    function __construct(EntityManagerInterface $entityManager)
+    public function __invoke(FormErrorEvent $event)
     {
-        $this->entityManager = $entityManager;
-    }
-
-    function __invoke(RegistrationEvent $event): void
-    {
-
-        $this->entityManager->flush(); // save new user
-
-        $event->getResponse()
-            ->setContent('...');
+        $form = $event->getForm();
+        $exception = $event->getException();
+        $response = new Response();
+        $response->setContent('...');
+        $event->setResponse($response);
     }
 }
 ```

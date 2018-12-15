@@ -5,12 +5,12 @@
  */
 declare(strict_types=1);
 
-namespace DawBed\UserBundle\Event\Request;
+namespace DawBed\UserRegistrationBundle\Event;
 
-use DawBed\UserBundle\Event\AbstractEvent;
+use DawBed\ComponentBundle\Event\AbstractEvent;
 use Symfony\Component\HttpFoundation\Request;
 
-abstract class AbstractRequestEvent extends AbstractEvent
+class RequestEvent extends AbstractEvent
 {
     private $request;
 
@@ -18,5 +18,8 @@ abstract class AbstractRequestEvent extends AbstractEvent
     {
         $this->request = $request;
     }
-
+    public function getName(): string
+    {
+        return Events::REGISTRATION_REQUEST;
+    }
 }
