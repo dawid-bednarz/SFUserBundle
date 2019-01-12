@@ -39,10 +39,10 @@ class RegistrationController extends AbstractController
         $this->eventDispatcher->dispatch(new RequestEvent($request));
 
         $criteria = new CreateCriteria($statusFactoryService->build(StatusFactoryService::REGISTRATION_ID));
+        $model = $createService->prepareModel($criteria);
 
-        $form = $this->createForm(RegistrationType::class, $createService->prepareModel($criteria), [
-            'method' => 'POST',
-            'validation_groups' => [ValidatorGroup::REGISTRATION]
+        $form = $this->createForm(RegistrationType::class, $model, [
+            'method' => 'POST'
         ]);
 
         $form->handleRequest($request);
@@ -55,7 +55,7 @@ class RegistrationController extends AbstractController
 
         $em = $createService->make($form->getData());
 
-        $response = $this->eventDispatcher->dispatch(new ResponseEvent($form->getData()->getEntity()))
+        $response = $this->eventDispatcher->dispatch(new ResponseEvent($model->getEntity(), $model->getPassword()))
             ->getResponse();
 
         $em->flush();

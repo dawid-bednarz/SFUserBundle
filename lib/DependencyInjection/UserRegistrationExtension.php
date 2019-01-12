@@ -25,6 +25,7 @@ class UserRegistrationExtension extends Extension implements PrependExtensionInt
 
     public function load(array $configs, ContainerBuilder $container): void
     {
+        $container->setParameter('bundle_dir', dirname(__DIR__));
         $loader = $this->prepareLoader($container);
         $loader->load('services.yaml');
     }

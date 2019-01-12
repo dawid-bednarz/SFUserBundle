@@ -1,0 +1,9 @@
+DawBed\PHPUser\User:
+      constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity:
+            fields: [email]
+            groups: [registration]
+      properties:
+         email:
+           - NotBlank: { groups: [registration] }
+           - Email: { groups: [registration] }

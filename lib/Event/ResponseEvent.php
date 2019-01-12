@@ -10,14 +10,20 @@ namespace DawBed\UserRegistrationBundle\Event;
 use DawBed\ComponentBundle\Event\AbstractResponseEvent;
 use DawBed\PHPUser\UserInterface;
 
-
 class ResponseEvent extends AbstractResponseEvent implements ResponseInterfaceEvent
 {
     protected $user;
+    protected $password;
 
-    function __construct(UserInterface $user)
+    function __construct(UserInterface $user, string $password)
     {
         $this->user = $user;
+        $this->password = $password;
+    }
+
+    public function getPassword(): string
+    {
+        return $this->password;
     }
 
     public function getUser(): UserInterface

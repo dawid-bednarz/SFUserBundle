@@ -1,6 +1,8 @@
 # DESCRIPTION
 Elastic user registration bundle
 # INSTALATION
+`composer require dawid-bednarz/sf-user-registration-bundle`
+
 1 Add bundle route file to your main routes.yaml (config/routes.yaml)
 ```yaml
 userRegistrationBundle:
@@ -24,9 +26,12 @@ class ResponseListener
 {
     function __invoke(ResponseInterfaceEvent $event): void
     {
-        $response = new Response();
+        $response = new JsonResponse();
+        
         $user = $event->getUser();
-        $response->setContent('...');
+        $password = $event->getPassword(); // readable password
+        
+        $response->setData([]);
 
         $event->setResponse($response);
     }
