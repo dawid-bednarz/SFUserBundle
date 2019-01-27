@@ -31,11 +31,13 @@ class RegistrationType extends AbstractType
                     new Valid(),
                     new NotBlank()
                 ],
-                'validation_groups' => [ValidatorGroup::REGISTRATION]
+                'validation_groups' => [ValidatorGroup::REGISTRATION],
+                'label' => 'email'
             ])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'constraints' => $this->passwordService->getConstraints()
+                'constraints' => $this->passwordService->getConstraints(),
+                'label' => 'password'
             ]);
     }
 
