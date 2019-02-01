@@ -8,7 +8,9 @@
 
 namespace DawBed\UserRegistrationBundle\Controller;
 
+use DawBed\ComponentBundle\Event\Error\ExceptionErrorEvent;
 use DawBed\ComponentBundle\Event\Error\FormErrorEvent;
+use DawBed\ComponentBundle\Exception\Form\IsNotSubmitException;
 use DawBed\ComponentBundle\Service\EventDispatcher;
 use DawBed\PHPUser\Model\User\Criteria\CreateCriteria;
 use DawBed\UserRegistrationBundle\Event\Events;
@@ -47,8 +49,11 @@ class RegistrationController extends AbstractController
 
         $form->handleRequest($request);
 
-        if (!$form->isSubmitted() || !$form->isValid()) {
-
+        if (!$form->isSubmitted()) {
+            return $this->eventDispatcher->dispatch(new ExceptionErrorEvent(Events::REGISTRATION_ERROR, new IsNotSubmitException()))
+                ->getResponse();
+        }
+        if (!$form->isValid()) {
             return $this->eventDispatcher->dispatch(new FormErrorEvent(Events::REGISTRATION_ERROR, $form))
                 ->getResponse();
         }
