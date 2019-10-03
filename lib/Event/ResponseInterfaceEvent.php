@@ -7,7 +7,7 @@ declare(strict_types=1);
 
 namespace DawBed\UserRegistrationBundle\Event;
 
-use DawBed\PHPUser\UserInterface;
+use Dawbed\UserBundle\Entity\UserInterface;
 
 interface ResponseInterfaceEvent
 {

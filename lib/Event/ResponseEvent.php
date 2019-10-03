@@ -8,7 +8,7 @@ declare(strict_types=1);
 namespace DawBed\UserRegistrationBundle\Event;
 
 use DawBed\ComponentBundle\Event\AbstractResponseEvent;
-use DawBed\PHPUser\UserInterface;
+use Dawbed\UserBundle\Entity\UserInterface;
 
 class ResponseEvent extends AbstractResponseEvent implements ResponseInterfaceEvent
 {

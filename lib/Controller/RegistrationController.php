@@ -12,7 +12,7 @@ use DawBed\ComponentBundle\Event\Error\ExceptionErrorEvent;
 use DawBed\ComponentBundle\Event\Error\FormErrorEvent;
 use DawBed\ComponentBundle\Exception\Form\IsNotSubmitException;
 use DawBed\ComponentBundle\Service\EventDispatcher;
-use DawBed\PHPUser\Model\User\Criteria\CreateCriteria;
+use DawBed\UserBundle\Model\Criteria\CreateCriteria;
 use DawBed\UserRegistrationBundle\Event\Events;
 use DawBed\UserRegistrationBundle\Event\RequestEvent;
 use DawBed\UserRegistrationBundle\Event\ResponseEvent;

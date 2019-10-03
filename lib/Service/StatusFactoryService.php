@@ -10,10 +10,10 @@ namespace DawBed\UserRegistrationBundle\Service;
 use DawBed\ContextBundle\Service\AbstractContextFactory;
 use DawBed\ContextBundle\Service\CreateServiceInterface;
 use DawBed\ContextBundle\Service\FactoryCollection;
+use DawBed\PHPClassProvider\ClassProvider;
 use DawBed\PHPStatus\Status;
+use DawBed\StatusBundle\Entity\AbstractStatus;
 use DawBed\StatusBundle\Service\CreateService;
-use DawBed\StatusBundle\Service\EntityService;
-
 
 class StatusFactoryService extends AbstractContextFactory
 {
@@ -22,9 +22,8 @@ class StatusFactoryService extends AbstractContextFactory
     private $entityService;
     private $createService;
 
-    public function __construct(CreateService $createService, EntityService $entityService)
+    public function __construct(CreateService $createService)
     {
-        $this->entityService = $entityService;
         $this->createService = $createService;
     }
 
@@ -43,7 +42,7 @@ class StatusFactoryService extends AbstractContextFactory
     private function registration(): \Closure
     {
         return \Closure::bind(function (): Status {
-            return (new $this->entityService->Status)
+            return (ClassProvider::new(AbstractStatus::class))
                 ->setType(self::REGISTRATION_ID)
                 ->setName('User Registration');
         }, $this);
