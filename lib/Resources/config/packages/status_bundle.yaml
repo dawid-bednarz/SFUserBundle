@@ -1,3 +1,5 @@
 dawbed_status_bundle:
-   types:
-      registration: !php/const DawBed\UserRegistrationBundle\Service\StatusFactoryService::REGISTRATION_ID
+   statuses:
+     registaration:
+       name: 'User Registration'
+       groups: ['registration']

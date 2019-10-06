@@ -12,11 +12,12 @@ use DawBed\ComponentBundle\Event\Error\ExceptionErrorEvent;
 use DawBed\ComponentBundle\Event\Error\FormErrorEvent;
 use DawBed\ComponentBundle\Exception\Form\IsNotSubmitException;
 use DawBed\ComponentBundle\Service\EventDispatcher;
+use DawBed\StatusBundle\Provider;
 use DawBed\UserBundle\Model\Criteria\CreateCriteria;
+use DawBed\UserRegistrationBundle\Enum\StatusEnum;
 use DawBed\UserRegistrationBundle\Event\Events;
 use DawBed\UserRegistrationBundle\Event\RequestEvent;
 use DawBed\UserRegistrationBundle\Event\ResponseEvent;
-use DawBed\UserRegistrationBundle\Service\StatusFactoryService;
 use DawBed\UserRegistrationBundle\Validator\ValidatorGroup;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -36,12 +37,13 @@ class RegistrationController extends AbstractController
     public function registration(
         Request $request,
         CreateService $createService,
-        StatusFactoryService $statusFactoryService): Response
+        Provider $statusProvider): Response
     {
         $this->eventDispatcher->dispatch(new RequestEvent($request));
 
-        $criteria = new CreateCriteria($statusFactoryService->build(StatusFactoryService::REGISTRATION_ID));
-        $model = $createService->prepareModel($criteria);
+        $model = $createService->prepareModel(
+            (new CreateCriteria())->setStatus($statusProvider->build(StatusEnum::REGISTRATION))
+        );
 
         $form = $this->createForm(RegistrationType::class, $model, [
             'method' => 'POST'
