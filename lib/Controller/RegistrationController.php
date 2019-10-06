@@ -11,6 +11,7 @@ namespace DawBed\UserRegistrationBundle\Controller;
 use DawBed\ComponentBundle\Event\Error\ExceptionErrorEvent;
 use DawBed\ComponentBundle\Event\Error\FormErrorEvent;
 use DawBed\ComponentBundle\Exception\Form\IsNotSubmitException;
+use DawBed\ComponentBundle\Helper\EventResponseController;
 use DawBed\ComponentBundle\Service\EventDispatcher;
 use DawBed\StatusBundle\Provider;
 use DawBed\UserBundle\Model\Criteria\CreateCriteria;
@@ -27,43 +28,33 @@ use Symfony\Component\HttpFoundation\Response;
 
 class RegistrationController extends AbstractController
 {
-    private $eventDispatcher;
-
-    function __construct(EventDispatcher $eventDispatcher)
-    {
-        $this->eventDispatcher = $eventDispatcher;
-    }
+    use EventResponseController;
 
     public function registration(
         Request $request,
         CreateService $createService,
         Provider $statusProvider): Response
     {
-        $this->eventDispatcher->dispatch(new RequestEvent($request));
-
+        $this->dispatch(new RequestEvent($request));
+  
         $model = $createService->prepareModel(
             (new CreateCriteria())->setStatus($statusProvider->build(StatusEnum::REGISTRATION))
         );
 
-        $form = $this->createForm(RegistrationType::class, $model, [
-            'method' => 'POST'
-        ]);
+        $form = $this->createForm(RegistrationType::class, $model);
 
         $form->handleRequest($request);
 
         if (!$form->isSubmitted()) {
-            return $this->eventDispatcher->dispatch(new ExceptionErrorEvent(Events::REGISTRATION_ERROR, new IsNotSubmitException()))
-                ->getResponse();
+            return $this->notSubmittedForm();
         }
         if (!$form->isValid()) {
-            return $this->eventDispatcher->dispatch(new FormErrorEvent(Events::REGISTRATION_ERROR, $form))
-                ->getResponse();
+            return $this->invalidForm($form);
         }
 
         $em = $createService->make($form->getData());
 
-        $response = $this->eventDispatcher->dispatch(new ResponseEvent($model->getEntity(), $model->getPassword()))
-            ->getResponse();
+        $response = $this->response(new ResponseEvent($model->getEntity(), $model->getPassword()));
 
         $em->flush();
 

@@ -13,12 +13,10 @@ class Events extends AbstractEvents
 {
     const REGISTRATION_RESPONSE = 'user.registration.response';
     const REGISTRATION_REQUEST = 'user.registration.request';
-    const REGISTRATION_ERROR = 'user.registration.error';
 
     const ALL = [
         self::REGISTRATION_RESPONSE => self::REQUIRED,
-        self::REGISTRATION_REQUEST => self::OPTIONAL,
-        self::REGISTRATION_ERROR => self::REQUIRED
+        self::REGISTRATION_REQUEST => self::OPTIONAL
     ];
 
     protected function getAll(): array

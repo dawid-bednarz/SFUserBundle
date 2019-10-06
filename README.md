@@ -16,7 +16,7 @@ userRegistrationBundle:
             - { name: kernel.event_listener, event: !php/const DawBed\UserRegistrationBundle\Event\Events::REGISTRATION_RESPONSE }
     App\EventListener\User\Registration\ErrorListener:
         tags:
-            - { name: kernel.event_listener, event: !php/const DawBed\UserRegistrationBundle\Event\Events::REGISTRATION_ERROR }
+            - { name: kernel.event_listener, event: !php/const DawBed\ComponentBundle\Event\Events::ERROR_RESPONSE }
 ```
 Look on the below to see example listener
 ```php
