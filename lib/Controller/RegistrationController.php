@@ -8,22 +8,17 @@
 
 namespace DawBed\UserRegistrationBundle\Controller;
 
-use DawBed\ComponentBundle\Event\Error\ExceptionErrorEvent;
-use DawBed\ComponentBundle\Event\Error\FormErrorEvent;
-use DawBed\ComponentBundle\Exception\Form\IsNotSubmitException;
+use DawBed\ComponentBundle\Enum\WriteTypeEnum;
 use DawBed\ComponentBundle\Helper\EventResponseController;
-use DawBed\ComponentBundle\Service\EventDispatcher;
 use DawBed\StatusBundle\Provider;
-use DawBed\UserBundle\Model\Criteria\CreateCriteria;
+use DawBed\UserBundle\Model\Criteria\WriteCriteria;
 use DawBed\UserRegistrationBundle\Enum\StatusEnum;
-use DawBed\UserRegistrationBundle\Event\Events;
 use DawBed\UserRegistrationBundle\Event\RequestEvent;
 use DawBed\UserRegistrationBundle\Event\ResponseEvent;
-use DawBed\UserRegistrationBundle\Validator\ValidatorGroup;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use DawBed\UserRegistrationBundle\Form\Registration\RegistrationType;
-use DawBed\UserBundle\Service\CreateService;
+use DawBed\UserBundle\Service\WriteService;
 use Symfony\Component\HttpFoundation\Response;
 
 class RegistrationController extends AbstractController
@@ -32,13 +27,14 @@ class RegistrationController extends AbstractController
 
     public function registration(
         Request $request,
-        CreateService $createService,
+        WriteService $createService,
         Provider $statusProvider): Response
     {
         $this->dispatch(new RequestEvent($request));
   
         $model = $createService->prepareModel(
-            (new CreateCriteria())->setStatus($statusProvider->build(StatusEnum::REGISTRATION))
+            (new WriteCriteria(WriteTypeEnum::CREATE))
+                ->setStatus($statusProvider->get(StatusEnum::REGISTRATION))
         );
 
         $form = $this->createForm(RegistrationType::class, $model);
