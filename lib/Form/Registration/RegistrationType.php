@@ -3,7 +3,7 @@
 namespace DawBed\UserRegistrationBundle\Form\Registration;
 
 use DawBed\PHPUser\Model\User\CreateModel;
-use DawBed\UserBundle\Service\PasswordService;
+use DawBed\UserBundle\Utils\Password;
 use DawBed\UserRegistrationBundle\Validator\ValidatorGroup;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
@@ -16,11 +16,11 @@ use Symfony\Component\Validator\Constraints\Valid;
 
 class RegistrationType extends AbstractType
 {
-    private $passwordService;
+    private $password;
 
-    function __construct(PasswordService $passwordService)
+    function __construct(Password $password)
     {
-        $this->passwordService = $passwordService;
+        $this->password = $password;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -37,7 +37,7 @@ class RegistrationType extends AbstractType
             ])
             ->add('password', RepeatedType::class, [
                 'type' => PasswordType::class,
-                'constraints' => $this->passwordService->getConstraints(),
+                'constraints' => $this->password->getConstraints(),
                 'label' => 'password'
             ]);
     }
